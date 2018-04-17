@@ -8,15 +8,22 @@ pipeline {
         echo "${TEST_USER_PSW}"
       }
     }
-    stage('Deploy') {
-      options {
-        timeout(time: 45, unit: 'SECONDS')
-      }
-      input {
-        message 'Should we continue?'
-      }
+    stage('Get Kernel') {
       steps {
-        echo 'Continuing with deployment'
+        script {
+          try {
+            KERNEL_VERSION = sh (script: "uname -r", returnStdout: true)
+          } catch(err) {
+            echo "CAUGHT ERROR: ${err}"
+            throw err
+          }
+        }
+        
+      }
+    }
+    stage('Say Kernel') {
+      steps {
+        echo "${KERNEL_VERSION}"
       }
     }
   }
